@@ -23,12 +23,18 @@ import vmt
 def main():
     env = msat_create_env({'printer.defines_prefix' : 'd!'})
     p = argparse.ArgumentParser()
+    p.add_argument('input_file', nargs='?', type=str,
+                   default='-', help='input VMT file (default: stdin)')
     p.add_argument('--old', action='store_true', help='use old Z3 format')
     p.add_argument('-i', '--index', type=int,
                    help='index of property to translate (default 0)', default=0)
     opts = p.parse_args()
     
-    model = vmt.read(env, sys.stdin)
+    # Handle stdin special case
+    if opts.input_file == '-':
+        model = vmt.read(env, sys.stdin)
+    else:
+        model = vmt.read(env, opts.input_file)
     init = model.init
     trans = model.trans
     prop = model.props[opts.index]

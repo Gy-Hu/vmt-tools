@@ -8,20 +8,13 @@ from pysmt.logics import get_logic_by_name
 import pysmt.smtlib.commands as smtcmd
 from mathsat import *
 import vmt
-try:
-    # Python 2
-    import cStringIO as StringIO
-    StringIOClass = StringIO.StringIO
-except ImportError:
-    # Python 3
-    from io import StringIO
-    StringIOClass = StringIO
+import cStringIO
 import math
 import itertools
 
 
 def to_smt2(f):
-    buf = StringIOClass()
+    buf = cStringIO.StringIO()
     pr = SmtDagPrinter(buf)
     pr.printer(f)
     return buf.getvalue()
@@ -423,16 +416,9 @@ def parse(src, msat_env, msat_converter):
 
 
 def main():
-    if len(sys.argv) < 2:
-        print("Usage: python horn2vmt.py <input_file>")
-        return
-    
-    input_file = sys.argv[1]
-    
     with Solver(name='msat') as s:
-        with open(input_file, 'r') as f:
-            model = parse(f, s.msat_env, s.converter)
-            vmt.write(s.msat_env, model, sys.stdout)
+        model = parse('/Users/huguangyu/coding_env/ivybench/paxos/vmt/Paxos.vmt', s.msat_env, s.converter)
+        vmt.write(s.msat_env, model, sys.stdout)
 
 
 if __name__ == '__main__':
