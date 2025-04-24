@@ -1,0 +1,21 @@
+(set-logic QF_BV)
+
+(declare-fun __chosen () (_ BitVec 1))
+(declare-fun chosen () (_ BitVec 1))
+(define-fun .chosen () (_ BitVec 1) (! __chosen :next chosen))
+
+; Safety property
+(define-fun .prop () Bool (!
+  (= __chosen #b0)
+  :invar-property 0))
+
+; Initial state
+(define-fun .init () Bool (!
+  (= __chosen #b0)
+  :init true))
+
+; Transition relation
+(define-fun .trans () Bool (!
+  (or (= chosen __chosen)
+      (= chosen #b1))
+  :trans true)) 
